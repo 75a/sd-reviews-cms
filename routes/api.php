@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\MustBeAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,12 +25,14 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::post('/auth/login', 'App\Http\Controllers\AuthController@login');
 
-
     Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{user}', [UserController::class, 'show']);
 
+    Route::post('/users', [UserController::class, 'store']);
 
-    //Route::post('/users', 'App\Http\Controllers\UserController@store');
+    Route::group(['middleware' => ['auth:api', 'admin']], function() {
+        Route::get('/users/{user}', [UserController::class, 'show']);
+    });
+
     //Route::get('/users/me', 'App\Http\Controllers\UserController@profile')->middleware('auth:api');
 });
 
