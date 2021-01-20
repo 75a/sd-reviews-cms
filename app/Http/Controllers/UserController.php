@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +26,8 @@ class UserController extends Controller
             $user = new User;
             $user->fill($request->validated());
             $user->password = Hash::make($user->password);
+            $user->role()->associate(Role::where('name',env('ROLE_NAME_UNVERIFIED'))->first());
+
             if ($user->save()){
                 return new UserResource($user);
             }
@@ -36,13 +39,9 @@ class UserController extends Controller
         return null;
     }
 
-    public function profile(Request $request)
+    public function show(User $user)
     {
-        $user = $request->user();
-        if ($user) {
-            return response()->json($user);
-        }
-
-        return response()->json(['message' => 'User not found'], 404);
+        return response()->json($user);
+       //return response()->json(['message' => 'User not found'], 404);
     }
 }
