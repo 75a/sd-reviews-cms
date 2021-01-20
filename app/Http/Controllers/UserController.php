@@ -39,13 +39,9 @@ class UserController extends Controller
         return null;
     }
 
-    public function profile(Request $request)
+    public function show(User $user)
     {
-        $user = $request->user();
-        if ($user) {
-            return response()->json($user);
-        }
-
-        return response()->json(['message' => 'User not found'], 404);
+        return response()->json($user);
+       //return response()->json(['message' => 'User not found'], 404);
     }
 }
