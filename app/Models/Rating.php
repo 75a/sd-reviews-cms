@@ -9,9 +9,4 @@ class Rating extends Model
 {
     use HasFactory;
     protected $table = "ratings";
-
-    public function rateable()
-    {
-        return $this->morphTo();
-    }
 }

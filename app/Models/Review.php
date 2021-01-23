@@ -17,11 +17,11 @@ class Review extends Model
 
     public function comments()
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->hasMany(Comment::class);
     }
 
     public function ratings()
     {
-        return $this->morphMany(Rating::class, 'rateable');
+        return $this->hasMany(Rating::class);
     }
 }
