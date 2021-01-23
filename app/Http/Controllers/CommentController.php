@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -10,11 +11,12 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Review $review
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Review $review)
     {
-        //
+        return response()->json($review->comments);
     }
 
     /**
