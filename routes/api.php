@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SiteSettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\MustBeAdmin;
 use Illuminate\Http\Request;
@@ -32,6 +33,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::put('/users/{user}',     [UserController::class, 'update']);
         Route::delete('/users/{user}',  [UserController::class, 'destroy']);
     });
+
+    Route::get('/sitesettings',                 [SiteSettingController::class, 'index']);
+    Route::get('/sitesettings/{siteSetting}',   [SiteSettingController::class, 'show']);
+    Route::put('/sitesettings/{siteSetting}',   [SiteSettingController::class, 'update']);
+
 });
 
 
