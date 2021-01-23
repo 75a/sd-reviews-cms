@@ -50,7 +50,7 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $user->update($request->all());
-        return response()->json($user, 200);
+        return new UserResource($user);
     }
 
     public function destroy(User $user)
