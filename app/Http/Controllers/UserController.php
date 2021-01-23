@@ -26,7 +26,9 @@ class UserController extends Controller
             $user = new User;
             $user->fill($request->validated());
             $user->password = Hash::make($user->password);
-            $user->role()->associate(Role::where('name',env('ROLE_NAME_UNVERIFIED'))->first());
+            $user->role()
+                ->associate(Role::where('name',env('ROLE_NAME_UNVERIFIED'))
+                ->first());
 
             if ($user->save()){
                 return new UserResource($user);
@@ -42,6 +44,22 @@ class UserController extends Controller
     public function show(User $user)
     {
         return response()->json($user);
-       //return response()->json(['message' => 'User not found'], 404);
     }
+
+    public function update(Request $request, User $user)
+    {
+        $user->update($request->all());
+        return response()->json($user, 200);
+    }
+
+    public function destroy(User $user)
+    {
+        try {
+            $user->delete();
+        } catch (\Exception $e) {
+            abort(400, $e->getMessage());
+        }
+        return response()->json(['message' => 'User deleted'], 204);
+    }
+
 }
