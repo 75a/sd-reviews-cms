@@ -10,4 +10,8 @@ class Comment extends Model
     use HasFactory;
     protected $table = "comments";
 
+    public function commentable()
+    {
+        return $this->morphTo();
+    }
 }
