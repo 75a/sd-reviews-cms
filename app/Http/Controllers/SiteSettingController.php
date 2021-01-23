@@ -10,33 +10,22 @@ class SiteSettingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return response()->json(SiteSetting::all());
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\SiteSetting  $siteSetting
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(SiteSetting $siteSetting)
     {
-        //
+        return response()->json($siteSetting);
     }
 
     /**
@@ -44,21 +33,11 @@ class SiteSettingController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\SiteSetting  $siteSetting
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, SiteSetting $siteSetting)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\SiteSetting  $siteSetting
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(SiteSetting $siteSetting)
-    {
-        //
+        $siteSetting->update($request->all());
+        return response()->json($siteSetting);
     }
 }
