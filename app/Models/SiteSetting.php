@@ -9,4 +9,13 @@ class SiteSetting extends Model
 {
     use HasFactory;
     protected $table = "site_settings";
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'value'
+    ];
 }
