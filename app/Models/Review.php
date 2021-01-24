@@ -10,6 +10,13 @@ class Review extends Model
     use HasFactory;
     protected $table = "reviews";
 
+    protected $fillable = [
+        'header',
+        'main_content',
+        'rating',
+        'is_published'
+    ];
+
     public function reviewAttributes()
     {
         return $this->belongsToMany(ReviewAttribute::class);
