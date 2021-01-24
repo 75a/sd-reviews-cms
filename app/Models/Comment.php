@@ -9,4 +9,15 @@ class Comment extends Model
 {
     use HasFactory;
     protected $table = "comments";
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'review_id',
+        'content'
+    ];
 }
