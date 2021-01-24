@@ -13,7 +13,7 @@ class CreateReviewReviewAttributeTable extends Migration
      */
     public function up()
     {
-        Schema::create('review_reviewattribute', function (Blueprint $table) {
+        Schema::create('review_review_attribute', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('review_id');
             $table->unsignedBigInteger('review_attribute_id');
@@ -38,6 +38,6 @@ class CreateReviewReviewAttributeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('review_reviewattribute');
+        Schema::dropIfExists('review_review_attribute');
     }
 }
