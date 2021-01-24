@@ -9,4 +9,15 @@ class Rating extends Model
 {
     use HasFactory;
     protected $table = "ratings";
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'review_id',
+        'rating'
+    ];
 }
