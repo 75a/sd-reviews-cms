@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SiteSettingResource;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 
@@ -10,22 +11,22 @@ class SiteSettingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
-        return response()->json(SiteSetting::all());
+        return SiteSettingResource::collection(SiteSetting::all());
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\SiteSetting  $siteSetting
-     * @return \Illuminate\Http\JsonResponse
+     * @return SiteSettingResource
      */
     public function show(SiteSetting $siteSetting)
     {
-        return response()->json($siteSetting);
+        return new SiteSettingResource($siteSetting);
     }
 
     /**
@@ -33,11 +34,11 @@ class SiteSettingController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\SiteSetting  $siteSetting
-     * @return \Illuminate\Http\JsonResponse
+     * @return SiteSettingResource
      */
     public function update(Request $request, SiteSetting $siteSetting)
     {
         $siteSetting->update($request->all());
-        return response()->json($siteSetting);
+        return new SiteSettingResource($siteSetting);
     }
 }
