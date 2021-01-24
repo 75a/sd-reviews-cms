@@ -9,4 +9,11 @@ class Widget extends Model
 {
     use HasFactory;
     protected $table = "widgets";
+
+    protected $fillable = [
+        'header',
+        'main_content',
+        'is_published',
+        'position'
+    ];
 }
