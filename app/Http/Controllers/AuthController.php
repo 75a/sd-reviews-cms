@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\Requests\AuthRequest;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -15,14 +15,11 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('authentication')->accessToken;
 
-            return response([
-                'user' => Auth::user(),
-                'access_token' => $token
+            return new JsonResponse([
+               'access_token' => $token
             ]);
         }
-        return response([
-            'message' => 'Authentication failed'
-        ], 401);
+        return response(null, 401);
     }
 
 }
