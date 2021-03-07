@@ -26,7 +26,7 @@ class RatingController extends Controller
     {
         $rating = new Rating();
         $rating->fill($request->all());
-        $rating->review_id = $review->id;
+        $review->ratings()->save($rating);
         $rating->save();
         return response()->json(new RatingResource($rating), 201);
     }
