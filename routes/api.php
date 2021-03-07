@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MenuLinkController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SiteSettingController;
@@ -31,7 +32,7 @@ Route::group(['prefix' => 'v1'], function () {
         return response()->json(['message' => 'Resource not Found'], 404);
     });
 
-    Route::post('/auth/login', 'App\Http\Controllers\AuthController@login');
+    Route::post('/auth/login', [AuthController::class, 'login']);
 
     Route::group(['middleware' => ['auth:api', 'admin']], function() {
         Route::get('/users', [UserController::class, 'index']);
