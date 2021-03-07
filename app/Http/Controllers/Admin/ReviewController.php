@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReviewPostRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,7 @@ class ReviewController extends Controller
         return response()->json(ReviewResource::collection(Review::all()));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(ReviewPostRequest $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'header' => ['required'],

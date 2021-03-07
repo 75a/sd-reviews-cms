@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReviewAttributePostRequest;
 use App\Http\Resources\ReviewAttributeResource;
 use App\Models\ReviewAttribute;
 use http\Exception;
@@ -20,7 +21,7 @@ class ReviewAttributeController extends Controller
         return response()->json(ReviewAttributeResource::collection(ReviewAttribute::all()));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(ReviewAttributePostRequest $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'label' => ['required', 'unique:App\Models\ReviewAttribute,label'],

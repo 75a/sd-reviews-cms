@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WidgetPostRequest;
 use App\Http\Resources\WidgetResource;
 use App\Models\Widget;
 use http\Exception;
@@ -20,7 +21,7 @@ class WidgetController extends Controller
         return response()->json(WidgetResource::collection(Widget::all()));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(WidgetPostRequest $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'header' => ['required'],

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RatingPostRequest;
 use App\Http\Resources\RatingResource;
 use App\Models\Rating;
 use App\Models\Review;
@@ -21,7 +22,7 @@ class RatingController extends Controller
         return response()->json(RatingResource::collection(Rating::all()));
     }
 
-    public function store(Request $request, Review $review): JsonResponse
+    public function store(RatingPostRequest $request, Review $review): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'user_id' => ['required', 'exists:users,id'],

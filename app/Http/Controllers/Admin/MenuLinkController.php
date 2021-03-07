@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MenuLinkPostRequest;
 use App\Http\Resources\MenuLinkResource;
 use App\Models\MenuLink;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +19,7 @@ class MenuLinkController extends Controller
         return response()->json(MenuLinkResource::collection(MenuLink::all()));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(MenuLinkPostRequest $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'menu_name' => ['required'],
