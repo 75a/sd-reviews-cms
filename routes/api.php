@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::fallback(function(){
-        return response()->json(['message' => 'Resource not Found'], 404);
+        return response(null, 404);
     });
 
     Route::post('/auth/login', [AuthController::class, 'login']);
