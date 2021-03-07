@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CommentPostRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Review;
@@ -19,29 +20,12 @@ class CommentController extends Controller
         return response()->json(CommentResource::collection($review->comments));
     }
 
-    public function store(Request $request, Review $review): JsonResponse
+    public function store(CommentPostRequest $request, Review $review): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:users,id'],
-            'content' => ['required']
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toArray(), 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $comment = new Comment();
-            $comment->fill($request->all());
-            $review->comments()->save($comment);
-            $comment->save();
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            return response()->json($e->getMessage(), 409);
-        }
-
+        $comment = new Comment();
+        $comment->fill($request->all());
+        $review->comments()->save($comment);
+        $comment->save();
         return response()->json(new CommentResource($comment), 201);
     }
 
