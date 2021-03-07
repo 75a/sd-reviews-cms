@@ -21,6 +21,6 @@ class MustBeAdmin
         if ($user && $user->role->name === env('ROLE_NAME_ADMIN')) {
             return $next($request);
         }
-        return response(['message' => 'Unauthorized'], 401);
+        return response(null, 401);
     }
 }
