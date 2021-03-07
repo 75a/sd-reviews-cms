@@ -5,32 +5,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
-use http\Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return AnonymousResourceCollection
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        return ReviewResource::collection(Review::all());
+        return response()->json(ReviewResource::collection(Review::all()));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'header' => ['required'],
@@ -49,50 +38,29 @@ class ReviewController extends Controller
             $review->fill($request->all());
             $review->save();
             DB::commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 409);
         }
-
-        return (new ReviewResource($review))->response();
+        return response()->json(new ReviewResource($review), 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Review $review
-     * @return ReviewResource
-     */
-    public function show(Review $review)
+    public function show(Review $review): JsonResponse
     {
-        return new ReviewResource($review);
+        return response()->json(new ReviewResource($review));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Review $review
-     * @return ReviewResource
-     */
-    public function update(Request $request, Review $review)
+    public function update(Request $request, Review $review): JsonResponse
     {
         $review->update($request->all());
-        return new ReviewResource($review);
+        return response()->json(new ReviewResource($review));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Request $request
-     * @param Review $review
-     * @return JsonResponse
-     */
-    public function destroy(Request $request, Review $review)
+    public function destroy(Request $request, Review $review): JsonResponse
     {
         try {
             $review->delete();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             abort(400, $e->getMessage());
         }
         return response()->json(null, 204);

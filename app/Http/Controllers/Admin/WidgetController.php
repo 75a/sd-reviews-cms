@@ -11,26 +11,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class WidgetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return AnonymousResourceCollection
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        return WidgetResource::collection(Widget::all());
+        return response()->json(WidgetResource::collection(Widget::all()));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'header' => ['required'],
@@ -49,49 +39,29 @@ class WidgetController extends Controller
             $widget->fill($request->all());
             $widget->save();
             DB::commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 409);
         }
-
-        return (new WidgetResource($widget))->response();
+        return response()->json(new WidgetResource($widget), 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Widget $widget
-     * @return WidgetResource
-     */
-    public function show(Widget $widget)
+    public function show(Widget $widget): JsonResponse
     {
-        return new WidgetResource($widget);
+        return response()->json(new WidgetResource($widget));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Widget $widget
-     * @return WidgetResource
-     */
-    public function update(Request $request, Widget $widget)
+    public function update(Request $request, Widget $widget): JsonResponse
     {
         $widget->update($request->all());
-        return new WidgetResource($widget);
+        return response()->json(new WidgetResource($widget));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Widget $widget
-     * @return JsonResponse
-     */
-    public function destroy(Widget $widget)
+    public function destroy(Widget $widget): JsonResponse
     {
         try {
             $widget->delete();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             abort(400, $e->getMessage());
         }
         return response()->json(null, 204);

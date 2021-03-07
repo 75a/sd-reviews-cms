@@ -11,26 +11,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class ReviewAttributeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return AnonymousResourceCollection
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        return ReviewAttributeResource::collection(ReviewAttribute::all());
+        return response()->json(ReviewAttributeResource::collection(ReviewAttribute::all()));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'label' => ['required', 'unique:App\Models\ReviewAttribute,label'],
@@ -47,49 +37,29 @@ class ReviewAttributeController extends Controller
             $reviewAttribute->fill($request->all());
             $reviewAttribute->save();
             DB::commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 409);
         }
-
-        return (new ReviewAttributeResource($reviewAttribute))->response();
+        return response()->json(new ReviewAttributeResource($reviewAttribute), 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param ReviewAttribute $reviewAttribute
-     * @return ReviewAttributeResource
-     */
-    public function show(ReviewAttribute $reviewAttribute)
+    public function show(ReviewAttribute $reviewAttribute): JsonResponse
     {
-        return new ReviewAttributeResource($reviewAttribute);
+        return response()->json(new ReviewAttributeResource($reviewAttribute));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param ReviewAttribute $reviewAttribute
-     * @return ReviewAttributeResource
-     */
-    public function update(Request $request, ReviewAttribute $reviewAttribute)
+    public function update(Request $request, ReviewAttribute $reviewAttribute): JsonResponse
     {
         $reviewAttribute->update($request->all());
-        return new ReviewAttributeResource($reviewAttribute);
+        return response()->json(new ReviewAttributeResource($reviewAttribute));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param ReviewAttribute $reviewAttribute
-     * @return JsonResponse
-     */
-    public function destroy(ReviewAttribute $reviewAttribute)
+    public function destroy(ReviewAttribute $reviewAttribute): JsonResponse
     {
         try {
             $reviewAttribute->delete();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             abort(400, $e->getMessage());
         }
         return response()->json(null, 204);
