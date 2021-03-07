@@ -30,7 +30,7 @@ class UserController extends Controller
                 ->associate(Role::where('name',env('ROLE_NAME_UNVERIFIED'))
                 ->first());
             if ($user->save()){
-                return response()->json(new UserResource($user));
+                return response()->json(new UserResource($user), 201);
             }
         } catch(Throwable $exception) {
             abort(400, $exception->getMessage());
