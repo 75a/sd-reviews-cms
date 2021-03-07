@@ -5,30 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuLinkResource;
 use App\Models\MenuLink;
-use http\Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class MenuLinkController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        return MenuLinkResource::collection(MenuLink::all());
+        return response()->json(MenuLinkResource::collection(MenuLink::all()));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'menu_name' => ['required'],
@@ -47,50 +37,31 @@ class MenuLinkController extends Controller
             $menuLink->fill($request->all());
             $menuLink->save();
             DB::commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 409);
         }
 
-        return (new MenuLinkResource($menuLink))->response();
+        return response()->json(new MenuLinkResource($menuLink), 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\MenuLink  $menuLink
-     * @return MenuLinkResource
-     */
-    public function show(MenuLink $menuLink)
+    public function show(MenuLink $menuLink): JsonResponse
     {
-        return new MenuLinkResource($menuLink);
+        return response()->json(new MenuLinkResource($menuLink));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\MenuLink  $menuLink
-     * @return MenuLinkResource
-     */
-    public function update(Request $request, MenuLink $menuLink)
+
+    public function update(Request $request, MenuLink $menuLink): JsonResponse
     {
         $menuLink->update($request->all());
-        return new MenuLinkResource($menuLink);
+        return response()->json(new MenuLinkResource($menuLink));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Request $request
-     * @param \App\Models\MenuLink $menuLink
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy(Request $request, MenuLink $menuLink)
+    public function destroy(Request $request, MenuLink $menuLink): JsonResponse
     {
         try {
             $menuLink->delete();
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             abort(400, $e->getMessage());
         }
         return response()->json(null, 204);
