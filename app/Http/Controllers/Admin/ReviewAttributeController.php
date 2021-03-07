@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Resources\ReviewResource;
-use App\Models\Review;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ReviewAttributeResource;
+use App\Models\ReviewAttribute;
 use http\Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class ReviewController extends Controller
+class ReviewAttributeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +21,7 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        return ReviewResource::collection(Review::all());
+        return ReviewAttributeResource::collection(ReviewAttribute::all());
     }
 
     /**
@@ -32,10 +33,8 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'header' => ['required'],
-            'main_content' => ['required'],
-            'rating' => ['integer'],
-            'is_published' => ['boolean']
+            'label' => ['required', 'unique:App\Models\ReviewAttribute,label'],
+            'is_nullable' => ['required','boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -44,53 +43,52 @@ class ReviewController extends Controller
 
         DB::beginTransaction();
         try {
-            $review = new Review();
-            $review->fill($request->all());
-            $review->save();
+            $reviewAttribute = new ReviewAttribute();
+            $reviewAttribute->fill($request->all());
+            $reviewAttribute->save();
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 409);
         }
 
-        return (new ReviewResource($review))->response();
+        return (new ReviewAttributeResource($reviewAttribute))->response();
     }
 
     /**
      * Display the specified resource.
      *
-     * @param Review $review
-     * @return ReviewResource
+     * @param ReviewAttribute $reviewAttribute
+     * @return ReviewAttributeResource
      */
-    public function show(Review $review)
+    public function show(ReviewAttribute $reviewAttribute)
     {
-        return new ReviewResource($review);
+        return new ReviewAttributeResource($reviewAttribute);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Review $review
-     * @return ReviewResource
+     * @param ReviewAttribute $reviewAttribute
+     * @return ReviewAttributeResource
      */
-    public function update(Request $request, Review $review)
+    public function update(Request $request, ReviewAttribute $reviewAttribute)
     {
-        $review->update($request->all());
-        return new ReviewResource($review);
+        $reviewAttribute->update($request->all());
+        return new ReviewAttributeResource($reviewAttribute);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Request $request
-     * @param Review $review
+     * @param ReviewAttribute $reviewAttribute
      * @return JsonResponse
      */
-    public function destroy(Request $request, Review $review)
+    public function destroy(ReviewAttribute $reviewAttribute)
     {
         try {
-            $review->delete();
+            $reviewAttribute->delete();
         } catch (\Exception $e) {
             abort(400, $e->getMessage());
         }

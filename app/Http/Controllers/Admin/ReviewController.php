@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Resources\CommentResource;
-use App\Models\Comment;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use http\Exception;
 use Illuminate\Http\JsonResponse;
@@ -12,7 +12,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class CommentController extends Controller
+class ReviewController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,21 +21,22 @@ class CommentController extends Controller
      */
     public function index()
     {
-        return CommentResource::collection(Comment::all());
+        return ReviewResource::collection(Review::all());
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @param Review $review
      * @return JsonResponse
      */
-    public function store(Request $request, Review $review)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:users,id'],
-            'content' => ['required']
+            'header' => ['required'],
+            'main_content' => ['required'],
+            'rating' => ['integer'],
+            'is_published' => ['boolean']
         ]);
 
         if ($validator->fails()) {
@@ -44,29 +45,27 @@ class CommentController extends Controller
 
         DB::beginTransaction();
         try {
-            $comment = new Comment();
-            $comment->fill($request->all());
-            $comment->review_id = $review->id;
-            $comment->save();
+            $review = new Review();
+            $review->fill($request->all());
+            $review->save();
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 409);
         }
 
-        return (new CommentResource($comment))->response();
+        return (new ReviewResource($review))->response();
     }
 
     /**
      * Display the specified resource.
      *
      * @param Review $review
-     * @param Comment $comment
-     * @return CommentResource
+     * @return ReviewResource
      */
-    public function show(Review $review, Comment $comment)
+    public function show(Review $review)
     {
-        return new CommentResource($comment);
+        return new ReviewResource($review);
     }
 
     /**
@@ -74,26 +73,25 @@ class CommentController extends Controller
      *
      * @param Request $request
      * @param Review $review
-     * @param Comment $comment
-     * @return CommentResource
+     * @return ReviewResource
      */
-    public function update(Request $request, Review $review, Comment $comment)
+    public function update(Request $request, Review $review)
     {
-        $comment->update($request->all());
-        return new CommentResource($comment);
+        $review->update($request->all());
+        return new ReviewResource($review);
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param Review $review
-     * @param Comment $comment
      * @return JsonResponse
      */
-    public function destroy(Review $review, Comment $comment)
+    public function destroy(Request $request, Review $review)
     {
         try {
-            $comment->delete();
+            $review->delete();
         } catch (\Exception $e) {
             abort(400, $e->getMessage());
         }

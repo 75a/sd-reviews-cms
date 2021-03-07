@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Resources\RatingResource;
-use App\Models\Rating;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CommentResource;
+use App\Models\Comment;
 use App\Models\Review;
 use http\Exception;
 use Illuminate\Http\JsonResponse;
@@ -12,7 +13,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class RatingController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +22,7 @@ class RatingController extends Controller
      */
     public function index()
     {
-        return RatingResource::collection(Rating::all());
+        return CommentResource::collection(Comment::all());
     }
 
     /**
@@ -35,7 +36,7 @@ class RatingController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => ['required', 'exists:users,id'],
-            'rating' => ['required','integer']
+            'content' => ['required']
         ]);
 
         if ($validator->fails()) {
@@ -44,29 +45,29 @@ class RatingController extends Controller
 
         DB::beginTransaction();
         try {
-            $rating = new Rating();
-            $rating->fill($request->all());
-            $rating->review_id = $review->id;
-            $rating->save();
+            $comment = new Comment();
+            $comment->fill($request->all());
+            $comment->review_id = $review->id;
+            $comment->save();
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 409);
         }
 
-        return (new RatingResource($rating))->response();
+        return (new CommentResource($comment))->response();
     }
 
     /**
      * Display the specified resource.
      *
      * @param Review $review
-     * @param Rating $rating
-     * @return RatingResource
+     * @param Comment $comment
+     * @return CommentResource
      */
-    public function show(Review $review, Rating $rating)
+    public function show(Review $review, Comment $comment)
     {
-        return new RatingResource($rating);
+        return new CommentResource($comment);
     }
 
     /**
@@ -74,26 +75,26 @@ class RatingController extends Controller
      *
      * @param Request $request
      * @param Review $review
-     * @param Rating $rating
-     * @return RatingResource
+     * @param Comment $comment
+     * @return CommentResource
      */
-    public function update(Request $request, Review $review, Rating $rating)
+    public function update(Request $request, Review $review, Comment $comment)
     {
-        $rating->update($request->all());
-        return new RatingResource($rating);
+        $comment->update($request->all());
+        return new CommentResource($comment);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Review $review
-     * @param Rating $rating
+     * @param Comment $comment
      * @return JsonResponse
      */
-    public function destroy(Review $review, Rating $rating)
+    public function destroy(Review $review, Comment $comment)
     {
         try {
-            $rating->delete();
+            $comment->delete();
         } catch (\Exception $e) {
             abort(400, $e->getMessage());
         }
