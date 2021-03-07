@@ -36,7 +36,8 @@ class ReviewPostRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'user_id' => 'user ID'
+            'main_content' => 'main content',
+            'is_published' => 'is published'
         ];
     }
 

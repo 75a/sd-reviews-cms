@@ -36,7 +36,9 @@ class MenuLinkPostRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'user_id' => 'user ID'
+            'menu_name' => 'menu name',
+            'zindex' => 'z-index',
+            'url' => "URL"
         ];
     }
 

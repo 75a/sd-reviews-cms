@@ -34,7 +34,7 @@ class ReviewAttributePostRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'user_id' => 'user ID'
+            'is_nullable' => 'nullable'
         ];
     }
 
