@@ -22,27 +22,9 @@ class ReviewController extends Controller
 
     public function store(ReviewPostRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'header' => ['required'],
-            'main_content' => ['required'],
-            'rating' => ['integer'],
-            'is_published' => ['boolean']
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toArray(), 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $review = new Review();
-            $review->fill($request->all());
-            $review->save();
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            return response()->json($e->getMessage(), 409);
-        }
+        $review = new Review();
+        $review->fill($request->all());
+        $review->save();
         return response()->json(new ReviewResource($review), 201);
     }
 

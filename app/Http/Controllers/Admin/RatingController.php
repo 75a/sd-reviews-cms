@@ -24,26 +24,10 @@ class RatingController extends Controller
 
     public function store(RatingPostRequest $request, Review $review): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'user_id' => ['required', 'exists:users,id'],
-            'rating' => ['required','integer']
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toArray(), 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $rating = new Rating();
-            $rating->fill($request->all());
-            $rating->review_id = $review->id;
-            $rating->save();
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            return response()->json($e->getMessage(), 409);
-        }
+        $rating = new Rating();
+        $rating->fill($request->all());
+        $rating->review_id = $review->id;
+        $rating->save();
         return response()->json(new RatingResource($rating), 201);
     }
 

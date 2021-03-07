@@ -21,28 +21,9 @@ class MenuLinkController extends Controller
 
     public function store(MenuLinkPostRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'menu_name' => ['required'],
-            'label' => ['required'],
-            'url' => ['required'],
-            'zindex' => ['required']
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toArray(), 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $menuLink = new MenuLink();
-            $menuLink->fill($request->all());
-            $menuLink->save();
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            return response()->json($e->getMessage(), 409);
-        }
-
+        $menuLink = new MenuLink();
+        $menuLink->fill($request->all());
+        $menuLink->save();
         return response()->json(new MenuLinkResource($menuLink), 201);
     }
 

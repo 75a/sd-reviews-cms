@@ -23,25 +23,9 @@ class ReviewAttributeController extends Controller
 
     public function store(ReviewAttributePostRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'label' => ['required', 'unique:App\Models\ReviewAttribute,label'],
-            'is_nullable' => ['required','boolean'],
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toArray(), 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $reviewAttribute = new ReviewAttribute();
-            $reviewAttribute->fill($request->all());
-            $reviewAttribute->save();
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            return response()->json($e->getMessage(), 409);
-        }
+        $reviewAttribute = new ReviewAttribute();
+        $reviewAttribute->fill($request->all());
+        $reviewAttribute->save();
         return response()->json(new ReviewAttributeResource($reviewAttribute), 201);
     }
 

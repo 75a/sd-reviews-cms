@@ -23,27 +23,9 @@ class WidgetController extends Controller
 
     public function store(WidgetPostRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'header' => ['required'],
-            'main_content' => ['required'],
-            'is_published' => ['required','boolean'],
-            'position' => ['integer']
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toArray(), 422);
-        }
-
-        DB::beginTransaction();
-        try {
-            $widget = new Widget();
-            $widget->fill($request->all());
-            $widget->save();
-            DB::commit();
-        } catch (Throwable $e) {
-            DB::rollBack();
-            return response()->json($e->getMessage(), 409);
-        }
+        $widget = new Widget();
+        $widget->fill($request->all());
+        $widget->save();
         return response()->json(new WidgetResource($widget), 201);
     }
 
