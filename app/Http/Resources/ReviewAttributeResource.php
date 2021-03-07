@@ -14,6 +14,13 @@ class ReviewAttributeResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'label' => $this->label,
+            'slug' => $this->slug,
+            'is_nullable' => $this->is_nullable,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
     }
 }
